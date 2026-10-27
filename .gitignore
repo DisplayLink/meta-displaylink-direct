@@ -1,0 +1,15 @@
+# Build artifacts
+build/
+
+# Locally cloned layers
+bitbake/
+oe-core/
+poky/
+meta-*/
+!kas/**/meta-custom/
+
+# Local scripts
+.local/
+
+# VS Code
+.vscode/

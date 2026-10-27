@@ -1,0 +1,58 @@
+header:
+  version: 19
+
+machine: qemux86-64
+distro: poky
+local_conf_header:
+  accept_commercial: |
+    LICENSE_FLAGS_ACCEPTED:append = " commercial"
+
+target:
+  - libdlsdk
+  - dlsdk-samples-basic
+  - dlsdk-samples-video
+  - dlsdk-qt-plugin
+  - python3-dlsdk
+  - python3-dlsdk-samples
+
+repos:
+  oe-core:
+    url: "https://git.openembedded.org/openembedded-core"
+    branch: wrynose
+    commit: 00c66f1d38a234f7738c2eb8fafa41b4f057a865
+    layers:
+      meta:
+
+  bitbake:
+    url: "https://git.openembedded.org/bitbake"
+    branch: "2.18"
+    commit: 0ad6c1c34a5e07a5f8dd66ab248c1e7b37b69fa9
+    layers: {}
+
+  meta-yocto:
+    url: "https://git.yoctoproject.org/meta-yocto"
+    branch: wrynose
+    commit: 1b132647002eea43a2c7a7f857f63f42dacbc26c
+    layers:
+      meta-poky:
+
+  meta-oe:
+    url: "https://git.openembedded.org/meta-openembedded"
+    branch: wrynose
+    commit: 14282a02be9c74a1276a7cda7d6c89e054699a11
+    layers:
+      meta-oe:
+      meta-python:
+      meta-multimedia:
+
+  meta-qt6:
+    url: "https://code.qt.io/yocto/meta-qt6.git"
+    branch: "6.11"
+    commit: 9d39a6a23f51ed8829cf12419104db87b5f25290
+    layers:
+      .:
+
+  meta-displaylink-direct:
+    path: "."
+    layers:
+      .:

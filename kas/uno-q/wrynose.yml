@@ -1,0 +1,122 @@
+header:
+  version: 19
+
+machine: uno-q
+distro: nodistro
+target: core-image-full-cmdline
+
+repos:
+  oe-core:
+    url: https://git.openembedded.org/openembedded-core
+    branch: wrynose
+    commit: f09a0f28aeb54ddd90415dd458338e1565bb5a49
+    layers:
+      meta:
+
+  bitbake:
+    url: https://git.openembedded.org/bitbake
+    branch: '2.18'
+    commit: fae9db3168dbff1b8c76fe9c6726a9687ff97514
+    layers: {}
+
+  meta-yocto:
+    url: https://git.yoctoproject.org/meta-yocto
+    branch: wrynose
+    commit: 1b132647002eea43a2c7a7f857f63f42dacbc26c
+    layers:
+      meta-poky:
+
+  meta-oe:
+    url: https://git.openembedded.org/meta-openembedded
+    branch: wrynose
+    commit: af8b6d6b2f0b11595b0a0d5b82efa3129d52a628
+    layers:
+      meta-oe:
+      meta-networking:
+      meta-python:
+      meta-multimedia:
+
+  meta-lts-mixins:
+    url: https://git.yoctoproject.org/meta-lts-mixins
+    branch: wrynose/linux-firmware
+    commit: 6ad95d00531b32ec01792ab496718943dc95277b
+    layers:
+      .:
+
+  meta-qcom:
+    url: https://github.com/qualcomm-linux/meta-qcom.git
+    branch: wrynose
+    commit: fa2ef32673af9fc5077a528de5168c5ce4c33c61
+    layers:
+      .:
+
+  meta-qcom-3rdparty:
+    url: https://github.com/qualcomm-linux/meta-qcom-3rdparty.git
+    branch: wrynose
+    commit: c811139de411e706b960304097f58acae0402d8a
+    layers:
+      .:
+
+  meta-displaylink-direct:
+    path: "."
+    layers:
+      .:
+      kas/uno-q/meta-custom:
+
+  meta-qt6:
+    url: https://code.qt.io/yocto/meta-qt6.git
+    branch: '6.11'
+    commit: 9d39a6a23f51ed8829cf12419104db87b5f25290
+    layers:
+      .:
+
+local_conf_header:
+  uno_q: |
+    INIT_MANAGER = "systemd"
+    IMAGE_CLASSES += "image_types_qcom"
+    IMAGE_FSTYPES += "qcomflash"
+
+    IMAGE_INSTALL:append:pn-core-image-full-cmdline = " \
+        uno-q-config \
+        libdlsdk \
+        dlsdk-samples-basic \
+        dlsdk-samples-video \
+        dlsdk-qt-plugin \
+        qtdoc-examples \
+        python3-dlsdk \
+        python3-dlsdk-samples \
+        systemd-networkd \
+    "
+    # Install RTL8152/3 drivers for ThinkPad docks
+    IMAGE_INSTALL:append:pn-core-image-full-cmdline = " \
+        kernel-module-r8152 \
+        kernel-module-r8153-ecm \
+    "
+
+    IMAGE_INSTALL:remove:pn-core-image-full-cmdline = " \
+        connman \
+        connman-client \
+        dhcpcd \
+    "
+
+    LICENSE_FLAGS_ACCEPTED:append = " commercial"
+    DEPENDS:remove:pn-qtdoc-examples = "qtpdf"
+
+    # Use systemd-networkd for DHCP and systemd-resolved for DNS
+    PACKAGECONFIG:append:pn-systemd = " networkd resolved"
+
+    IMAGE_FEATURES:append:pn-core-image-full-cmdline = " ssh-server-openssh allow-root-login"
+    IMAGE_FEATURES:remove:pn-core-image-full-cmdline = " \
+        debug-tweaks \
+        empty-root-password \
+        allow-empty-password \
+        ssh-server-dropbear \
+    "
+
+    QT_QPA_DEFAULT_PLATFORM = "dlsdk"
+
+    # Password for root account is "displaylink"
+    ROOT_PASSWORD_HASH = "\$6\$TcFxwe651qWl9XTD\$iulb7Wapj7Wld4Sv.HeT5E0ft1xgORSh.xTruh5MUxksLSwElxsQQT/IyrfnFuRhX9XKQtuSZWbuWKmRgnRt5/"
+
+    INHERIT += "extrausers"
+    EXTRA_USERS_PARAMS:append:pn-core-image-full-cmdline = " usermod -p '${ROOT_PASSWORD_HASH}' root;"

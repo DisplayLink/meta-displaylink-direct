@@ -1,0 +1,46 @@
+header:
+  version: 19
+
+machine: qemux86-64
+distro: poky
+local_conf_header:
+  accept_commercial: |
+    LICENSE_FLAGS_ACCEPTED:append = " commercial"
+
+target:
+  - libdlsdk
+  - dlsdk-samples-basic
+  - dlsdk-samples-video
+  - dlsdk-qt-plugin
+  - python3-dlsdk
+  - python3-dlsdk-samples
+
+repos:
+  poky:
+    url: "https://git.yoctoproject.org/poky"
+    branch: scarthgap
+    commit: b2c16f1e69130558574e1363aff944647fa9cd11
+    layers:
+      meta:
+      meta-poky:
+
+  meta-oe:
+    url: "https://git.openembedded.org/meta-openembedded"
+    branch: scarthgap
+    commit: bec755063a8b5da65df626f5749496aadaa4f4bb
+    layers:
+      meta-oe:
+      meta-python:
+      meta-multimedia:
+
+  meta-qt6:
+    url: "https://code.qt.io/yocto/meta-qt6.git"
+    branch: "6.8"
+    commit: 2a9a0070f652134e15df332918a012862bf34047
+    layers:
+      .:
+
+  meta-displaylink-direct:
+    path: "."
+    layers:
+      .:

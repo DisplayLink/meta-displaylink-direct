@@ -1,0 +1,13 @@
+[Unit]
+Description=DisplayLink Direct Python screensaver sample
+After=systemd-user-sessions.service
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/share/dlsdk/samples/screensaver
+ExecStart=/usr/bin/python3 /usr/share/dlsdk/samples/screensaver/screensaver.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
